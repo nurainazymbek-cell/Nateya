@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Theme Toggle</title>
+    <style>
+        :root {
+            --bg-color: #F5F5F7;
+            --text-color: #1D1D1F;
+            --toggle-bg: #E8E8ED;
+            --toggle-circle: #FFFFFF;
+            --accent-color: #0071E3;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --text-color: #F5F5F7;
+            --toggle-bg: #333336;
+            --toggle-circle: #1D1D1F;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        /* Toggle Button Styles */
+        .theme-toggle {
+            position: relative;
+            width: 64px;
+            height: 32px;
+            background-color: var(--toggle-bg);
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            border: none;
+            outline: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .toggle-circle {
+            width: 24px;
+            height: 24px;
+            background-color: var(--toggle-circle);
+            border-radius: 50%;
+            transform: translateX(0);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .toggle-circle {
+            transform: translateX(32px);
+            background-color: var(--accent-color);
+        }
+
+        /* SVG Icons */
+        .icon {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            position: absolute;
+        }
+
+        .sun-icon {
+            color: #FFB800;
+            opacity: 1;
+        }
+
+        .moon-icon {
+            color: #FFFFFF;
+        }
+
+        [data-theme="dark"] .sun-icon {
+            opacity: 0;
+        }
+
+        [data-theme="dark"] .moon-icon {
+            opacity: 1;
+        }
+
+        /* Hover lift effect */
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s ease;
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 id="title">Minimalist Design</h1>
+        <p>A professional theme toggle implementation with smooth Apple-style animations and persistent storage.</p>
+        
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <div class="toggle-circle">
+                <svg class="icon sun-icon" viewBox="0 0 24 24"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
+                <svg class="icon moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
+            </div>
+        </button>
+    </div>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        const title = document.getElementById('title');
+
+        // Check for saved theme in localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        
+        // Initial application
+        if (savedTheme === 'dark') {
+            root.setAttribute('data-theme', 'dark');
+            title.textContent = 'Elegant Dark';
+        }
+
+        toggle.addEventListener('click', () => {
+            const currentTheme = root.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            root.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Subtle title change for effect
+            title.textContent = newTheme === 'dark' ? 'Elegant Dark' : 'Minimalist Design';
+        });
+
+        // Optional: Listen for system preference changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('theme')) {
+                const newTheme = e.matches ? 'dark' : 'light';
+                root.setAttribute('data-theme', newTheme);
+            }
+        });
+    </script>
+</body>
+</html>
